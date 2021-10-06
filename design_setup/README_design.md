@@ -1,5 +1,8 @@
 # Database design and setup
 
+## ER diagram website
+https://erdplus.com/standalone
+
 ## Create new database
 ```
 CREATE DATABASE group10;
