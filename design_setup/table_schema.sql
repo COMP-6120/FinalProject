@@ -56,8 +56,7 @@ CREATE TABLE orders (
 	ShipperID int NULL,
 	PRIMARY KEY (OrderID),
 	FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID),
-	FOREIGN KEY (EmployeeID) REFERENCES employee(EmployeeID),
-	FOREIGN KEY (ShipperID) REFERENCES shipper(ShipperID)
+	FOREIGN KEY (EmployeeID) REFERENCES employee(EmployeeID)
 );
 
 CREATE TABLE order_detail (
