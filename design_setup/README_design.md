@@ -19,3 +19,9 @@ LOAD DATA LOCAL INFILE 'full_path_to_csv_file' INTO TABLE db_name.table_name FIE
 > On windows backslashes need to be escaped
 
 > If order of columns are the same the last part (columns, columns, ...) can be ignored
+
+## Dump and restore
+```
+mysqldump -u [user] -p database_name > filename.sql
+mysql -u [user] -p newdatabase < database_name.sql
+```
