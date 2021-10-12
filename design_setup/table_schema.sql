@@ -16,7 +16,7 @@ CREATE TABLE subject (
 CREATE TABLE book (
 	BookID int NOT NULL,
 	Title varchar(255) NOT NULL,
-	UnitPrice decimal(6,2) NOT NULL,
+	UnitPrice decimal(6, 2) NOT NULL,
 	Author varchar(100) NOT NULL,
 	Quantity int NOT NULL,
 	SupplierID int NOT NULL,
