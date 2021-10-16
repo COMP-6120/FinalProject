@@ -9,6 +9,8 @@ public class Main {
         JFrame frame = new JFrame("Database Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300,300);
+		from.setPosition(100,100);
+		frame.setResizable(false);
         JButton button = new JButton("Press");
         // Adds button to content pane of frame.
         frame.getContentPane().add(button);
