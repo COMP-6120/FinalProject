@@ -1,24 +1,21 @@
-import java.sql.*;
+import javax.swing.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class Main {
-    static final String DATABASE = "jdbc:mysql://localhost:3307/group10";
-    static final String USERNAME = "root";
-    static final String PASSWORD = "comp6120";
-    static final String QUERY = "SELECT * FROM supplier";
+    public static void main(String[] args) throws SQLException {
+        // Swing interface goes here.
+        JFrame frame = new JFrame("Database Application");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300,300);
+        JButton button = new JButton("Press");
+        // Adds button to content pane of frame.
+        frame.getContentPane().add(button);
+        frame.setVisible(true);
 
-    public static void main(String[] args) {
-        // Open connection.
-        try (Connection conn = DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(QUERY)) {
-            // Extract data.
-            while (rs.next()) {
-                // Print by column name.
-                System.out.print("Supplier ID: " + rs.getInt("SupplierID") + "\n");
-                System.out.print("Supplier Name: " + rs.getString("CompanyName") + "\n");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // DatabaseInterface example.
+        String newQuery = "SELECT * FROM supplier";
+        ArrayList<Map<String, Object>> queryResults = DatabaseInterface.retrieveData(newQuery);
     }
 }
