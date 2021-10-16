@@ -1,4 +1,9 @@
 1. Show the subject names of books supplied by *supplier2*.
+> SELECT CategoryName FROM subject WHERE SubjectID IN (SELECT SubjectID FROM book WHERE SupplierID in (SELECT SupplierID FROM supplier WHERE CompanyName='supplier2'));
+> Output:
+| 1 | category1 |
+| 2 | category2 |
+
 2. Show the name and price of the most expensive book supplied by
      *supplier3*.
 3. Show the unique names of all books ordered by *lastname1
