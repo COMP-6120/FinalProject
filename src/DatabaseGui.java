@@ -11,7 +11,7 @@ public class DatabaseGui extends JFrame {
 	// Fonts
 	private Font titleFont = new Font(Font.SERIF, 
 									  Font.BOLD, 
-									  30); // for the app title
+									  35); // for the app title
 
 	private Font componentFont = new Font(Font.SERIF,
 										  Font.PLAIN,
@@ -39,21 +39,22 @@ public class DatabaseGui extends JFrame {
 
 		// Layout for the panels
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		titlePanel.setLayout(new FlowLayout());
+		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.LINE_AXIS));
 
 		// Adding things to titlePanel
 		appTitle.setFont(titleFont);
 		titlePanel.add(appTitle);
-
-		// Adding things to tableSelectPanel
+		// add glue for spacing between components
+		titlePanel.add(Box.createRigidArea(new Dimension(80, 0)));
 		tableSelect.setFont(componentFont);
-		tableSelectPanel.add(tableSelect);
+		titlePanel.add(tableSelect);
 
 		// Adding sub panels to main panel
 		mainPanel.add(titlePanel);
-		mainPanel.add(tableSelectPanel);
 
 		// Adding main panel to main frame
+		// vertical struct for a bit of space at the top of the window
+		add(Box.createRigidArea(new Dimension(600,20)));
 		add(mainPanel);
 
 		// Frame Size set last
