@@ -5,16 +5,9 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        // Swing interface goes here.
-        JFrame frame = new JFrame("Database Application");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300,300);
-		from.setPosition(100,100);
-		frame.setResizable(false);
-        JButton button = new JButton("Press");
-        // Adds button to content pane of frame.
-        frame.getContentPane().add(button);
-        frame.setVisible(true);
+        // GUI Instance
+		DatabaseGui dGui = new DatabaseGui();
+		dGui.display();
 
         // DatabaseInterface example.
         String newQuery = "SELECT * FROM supplier";
