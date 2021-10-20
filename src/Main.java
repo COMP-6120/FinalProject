@@ -1,16 +1,20 @@
 import javax.swing.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
 
+// arg[0] = dbName
+// arg[1] = dbPort
+// arg[2] = user
+// arg[3] = password
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         // GUI Instance
 		DatabaseGui dGui = new DatabaseGui();
 		dGui.display();
 
-        // DatabaseInterface example.
-        String newQuery = "SELECT * FROM supplier";
-        ArrayList<Map<String, Object>> queryResults = DatabaseInterface.retrieveData(newQuery);
+		DatabaseInterface dbInter = new DatabaseInterface(args[0],
+														  args[1],
+														  args[2],
+														  args[3]);
+
+		dbInter.execStatement("SHOW TABLES");
     }
 }

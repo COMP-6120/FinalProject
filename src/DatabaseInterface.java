@@ -1,37 +1,55 @@
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 public class DatabaseInterface {
-    public static ArrayList<Map<String, Object>> retrieveData(String QUERY) {
-        final String DATABASE = "jdbc:mysql://localhost:3307/group10";
-        final String USERNAME = "root";
-        final String PASSWORD = "comp6120";
 
-        // Open connection.
-        try (Connection conn = DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(QUERY)) {
-            ArrayList<Map<String, Object>> resultList = new ArrayList<>();
-            Map<String, Object> row;
+	private String user = "";
+	private String dbName = "";
+	private String port = "";
+	private String pwd = "";
+	private Connection conn = null;
+	private Statement stmt = null;
+	ResultSet rs = null;
 
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
+	DatabaseInterface(String dbNameIn, String portIn, String userIn, String pwdIn) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:" + portIn 
+																		 + "/" 
+																		 + dbNameIn
+																		 + "?user="
+																		 + userIn
+																		 + "&password="
+																		 + pwdIn
+																		 + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("Unknown Error: " + e.getMessage());
+		}
+	}
 
-            while (rs.next()) {
-                row = new HashMap<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.put(metaData.getColumnName(i), rs.getObject(i));
-                }
-                resultList.add(row);
-            }
+	public void execStatement(String stmtIn) {
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(stmtIn);
+			
+			while(rs.next()) {
+				System.out.println(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VenderError: " + e.getErrorCode());
+		} catch (Exception e) {
+			System.out.println("Unknown Error: " + e.getMessage());
+		}
+	}
 
-            return resultList;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
