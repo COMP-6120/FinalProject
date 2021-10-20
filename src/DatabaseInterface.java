@@ -12,7 +12,7 @@ public class DatabaseInterface {
 	private String pwd = "";
 	private Connection conn = null;
 	private Statement stmt = null;
-	ResultSet rs = null;
+	private ResultSet rs = null;
 
 	DatabaseInterface(String dbNameIn, String portIn, String userIn, String pwdIn) {
 		try {
