@@ -1,15 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class DatabaseGui extends JFrame {
+public class DatabaseGui extends JFrame implements ActionListener {
 
 	// Instance of the DatabaseInterface
 	private DatabaseInterface dbInter = null;
 	private ResultSet dbResults = null;
+	private ResultSetMetaData dbMeta = null;
 
 	// Instantiate main panel and subpanels
 	private JPanel mainPanel = new JPanel();
@@ -128,6 +131,9 @@ public class DatabaseGui extends JFrame {
 		tableSelect = new JComboBox<>(dbTables);
 		// add the component to titlePanel
 		tableSelect.setFont(componentFont);
+
+		// add action listener to tableSelect so we can do things with it
+		tableSelect.addActionListener(this);
 		titlePanel.add(tableSelect);
 
 		// Adding things to inputPanel
@@ -137,6 +143,7 @@ public class DatabaseGui extends JFrame {
 
 		// Adding things to inputSubmitPanel
 		inputSubmit.setFont(buttonFont);
+		inputSubmit.addActionListener(this);
 		inputSubmitPanel.add(inputSubmit);
 
 		// Adding label to tableLabelPanel
@@ -170,6 +177,38 @@ public class DatabaseGui extends JFrame {
 		// Frame Size set last
 		setSize(600,480);
 	}
+
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+	
+		if(source instanceof JComboBox) {
+			System.out.println("JComboBox Event!");
+
+			dbResults = dbInter.execStatement("SELECT * FROM " + ((JComboBox) source).getSelectedItem().toString());
+
+			try {
+				dbMeta = dbResults.getMetaData(); // for column headers
+
+				int columnCount = dbMeta.getColumnCount() + 1;
+				String[] columnHeaders = new String[columnCount];
+
+				for(int i=1; i<columnCount; i++) {
+					columnHeaders[i] = dbMeta.getColumnName(i);
+					System.out.println(columnHeaders[i]);
+				}
+
+				System.out.println(dbResults.getString(1));
+			}
+			catch(SQLException er) {
+				System.out.println(er);
+			}
+
+
+
+		}else if(source instanceof JButton) {
+			System.out.println("JButton Event!");
+		}
+	}	
 
 	public void display() {
 		setVisible(true);
