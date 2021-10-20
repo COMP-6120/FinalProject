@@ -35,14 +35,12 @@ public class DatabaseInterface {
 		}
 	}
 
-	public void execStatement(String stmtIn) {
+	public ResultSet execStatement(String stmtIn) {
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(stmtIn);
 			
-			while(rs.next()) {
-				System.out.println(rs.getString(1));
-			}
+			return rs;
 		} catch (SQLException e) {
 			System.out.println("SQLException: " + e.getMessage());
 			System.out.println("SQLState: " + e.getSQLState());
@@ -50,6 +48,7 @@ public class DatabaseInterface {
 		} catch (Exception e) {
 			System.out.println("Unknown Error: " + e.getMessage());
 		}
+		return null;
 	}
 
 }

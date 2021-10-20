@@ -1,7 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DatabaseGui extends JFrame {
+
+	// Instance of the DatabaseInterface
+	private DatabaseInterface dbInter = null;
+	private ResultSet dbResults = null;
 
 	// Instantiate main panel and subpanels
 	private JPanel mainPanel = new JPanel();
@@ -30,12 +38,8 @@ public class DatabaseGui extends JFrame {
 
 	// Things that will go on the titlePanel
 	private JLabel appTitle = new JLabel("Database Application");
-	
-	private String[] dbTables = {"orders", "shipper", "subject",
-								 "book", "customer", "employee",
-								 "supplier", "order_detail"};
-	
-	private JComboBox<String> tableSelect = new JComboBox<>(dbTables);
+	private String[] dbTables;
+	private JComboBox<String> tableSelect;
 
 	// Things that will go on the inputPanel
 	private JLabel inputLabel = new JLabel("Input Query");
@@ -46,10 +50,11 @@ public class DatabaseGui extends JFrame {
 	private JButton inputSubmit = new JButton("Submit Query");
 
 	// Things that will go on the tablePanel
-	// The data here is just for testing purposes
 	// TODO: Have Gui reach out to database to pull headers for current table
 	private String[] dbTableHeaders = {"OrderID", "CustomerID", "EmployeeID",
 									   "OrderDate", "ShippedDate", "ShipperID"};
+
+	//private String[] dbTableHeaders = null;
 	
 	// The data here is just for testing purposes
 	// TODO: Have Gui reach out to database for data
@@ -71,9 +76,17 @@ public class DatabaseGui extends JFrame {
 	private JScrollPane tablePane = new JScrollPane(guiTable);
 
 
-	DatabaseGui() {
-		// main frame configuration
+	DatabaseGui(String dbNameIn, String dbPortIn, String userIn, String pwIn) {
+		
 		super("Comp 6120 Database Systems I Final Project");
+
+		// initializing database interface
+		dbInter = new DatabaseInterface(dbNameIn,
+										dbPortIn,
+										userIn,
+										pwIn);
+
+		// main frame configuration
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setLocation(60,60);
@@ -92,6 +105,28 @@ public class DatabaseGui extends JFrame {
 		titlePanel.add(appTitle);
 		// add glue for spacing between components
 		titlePanel.add(Box.createRigidArea(new Dimension(80, 0)));
+	
+		// Have the GUI reach out to the database for the table select list
+		dbResults = dbInter.execStatement("SHOW TABLES");
+		List<String> resultString = new ArrayList<String>();
+
+		try {
+			while(dbResults.next()) {
+				resultString.add(dbResults.getString(1));
+			}
+		} catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}	
+
+		// initialize the dbTables Array
+		dbTables = new String[resultString.size()];
+		for(int i=0; i<resultString.size(); i++) {
+			dbTables[i] = resultString.get(i);
+		}
+		
+		// add the String[] array to the tableSelect gui component
+		tableSelect = new JComboBox<>(dbTables);
+		// add the component to titlePanel
 		tableSelect.setFont(componentFont);
 		titlePanel.add(tableSelect);
 
