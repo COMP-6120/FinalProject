@@ -221,7 +221,11 @@ public class DatabaseGui extends JFrame implements ActionListener {
 			createTable(dbResults);		
 
 		}else if(source instanceof JButton) {
-			System.out.println("JButton Event!");
+			// JButton Event
+			
+			// get the text (query) from the input box
+			dbResults = dbInter.execStatement(inputField.getText());
+			createTable(dbResults);
 		}
 	}	
 
