@@ -168,7 +168,13 @@ public class DatabaseGui extends JFrame implements ActionListener {
 	private void createTable(ResultSet rs) {
 		
 		// Make a new table model
-		DefaultTableModel tableModel = new DefaultTableModel();
+		DefaultTableModel tableModel = new DefaultTableModel() {
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 
 		try {
 			dbMeta = dbResults.getMetaData(); // for column headers
