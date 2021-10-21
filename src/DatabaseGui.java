@@ -54,24 +54,7 @@ public class DatabaseGui extends JFrame implements ActionListener {
 	private JButton inputSubmit = new JButton("Submit Query");
 
 	// Things that will go on the tablePanel
-	// TODO: Have Gui reach out to database to pull headers for current table
-	private String[] dbTableHeaders = {"OrderID", "CustomerID", "EmployeeID",
-									   "OrderDate", "ShippedDate", "ShipperID"};
-
-	//private String[] dbTableHeaders = null;
-	
-	// The data here is just for testing purposes
-	// TODO: Have Gui reach out to database for data
-	private Object[][] dbTableData = {
-		{1, 1, 1, "8/1/2016", "8/3/2016", 1},
-		{2, 1, 2, "8/4/2016", "NULL", "NULL"},
-		{3, 2, 1, "8/1/2016", "8/4/2016", 2},
-		{4, 4, 2, "8/4/2016", "8/4/2016", 1},
-		{5, 1, 1, "8/4/2016", "8/5/2016", 1},
-		{6, 4, 2, "8/4/2016", "8/5/2016", 1},
-		{7, 3, 1, "8/4/2016", "8/5/2016", 1}
-	};
-	private JTable guiTable = new JTable(dbTableData, dbTableHeaders);
+	private JTable guiTable = null;
 
 	// label for tableLabelPanel
 	private JLabel tableLabel = new JLabel("Result Table");
@@ -123,7 +106,7 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		}	
 
 		// initialize the dbTables Array
-		dbTables = new String[resultString.size()];
+		String[] dbTables = new String[resultString.size()];
 		for(int i=0; i<resultString.size(); i++) {
 			dbTables[i] = resultString.get(i);
 		}
@@ -167,6 +150,9 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		 * so that the pane doesn't grab and take over too much space */
 		tablePane.setPreferredSize(new Dimension(550, 200));
 		tablePane.setMaximumSize(new Dimension(550, 200));
+		// initially set up the guiTable here with the first db table in the list
+		dbResults = dbInter.execStatement("SELECT * FROM " + dbTables[0]);
+		createTable(dbResults);
 		guiTable.setFillsViewportHeight(true);
 		mainPanel.add(tablePane);
 
@@ -179,6 +165,46 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		setSize(600,480);
 	}
 
+	private void createTable(ResultSet rs) {
+		
+		// Make a new table model
+		DefaultTableModel tableModel = new DefaultTableModel();
+
+		try {
+			dbMeta = dbResults.getMetaData(); // for column headers
+
+			int columnCount = dbMeta.getColumnCount();
+			String[] dbTableHeaders = new String[columnCount];
+
+			// set table headers
+			for(int i=0; i<columnCount; i++) {
+				dbTableHeaders[i] = dbMeta.getColumnName(i+1);
+			}
+
+			tableModel.setColumnIdentifiers(dbTableHeaders);
+
+			// get number of rows
+			rs.last();
+			int rowCount = rs.getRow();
+			rs.first();
+
+			// add the data to the table model
+			for(int i=0; i<rowCount; i++) {
+				String[] tableRow = new String[columnCount];
+				for(int h=0; h<columnCount; h++) {
+					tableRow[h] = rs.getString(dbTableHeaders[h]);
+				}
+				tableModel.addRow(tableRow);
+				rs.next();
+			}
+		} catch(SQLException er) {
+			System.out.println(er);
+		}
+		guiTable = new JTable(tableModel);
+		tablePane.setViewportView(guiTable);
+		tablePane.repaint();
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 	
@@ -186,48 +212,7 @@ public class DatabaseGui extends JFrame implements ActionListener {
 			// JComboBox Event
 			dbResults = dbInter.execStatement("SELECT * FROM " + ((JComboBox) source).getSelectedItem().toString());
 
-			// Make a new table model
-			DefaultTableModel tableModel = new DefaultTableModel();
-
-			try {
-				dbMeta = dbResults.getMetaData(); // for column headers
-
-				int columnCount = dbMeta.getColumnCount();
-				dbTableHeaders = new String[columnCount];
-
-				// set table headers
-				for(int i=0; i<columnCount; i++){
-					dbTableHeaders[i] = dbMeta.getColumnName(i+1);
-				}
-
-				tableModel.setColumnIdentifiers(dbTableHeaders);
-
-				// get the number of rows
-				dbResults.last();
-				int rowCount = dbResults.getRow();
-				dbResults.first();
-
-				// create table data
-				dbTableData = new Object[rowCount][];
-				
-				for(int i=0; i<rowCount; i++) {
-					String[] newTableRow = new String[columnCount];
-					for(int h=0; h<columnCount; h++){
-						newTableRow[h] = dbResults.getString(dbTableHeaders[h]);
-					}
-					dbTableData[i] = newTableRow;
-					tableModel.addRow(newTableRow);
-					dbResults.next();
-				}
-			}
-			catch(SQLException er) {
-				System.out.println(er);
-			}
-			
-			guiTable = new JTable(tableModel);
-			tablePane.setViewportView(guiTable);
-			repaint();
-			
+			createTable(dbResults);		
 
 		}else if(source instanceof JButton) {
 			System.out.println("JButton Event!");
