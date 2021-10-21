@@ -51,7 +51,8 @@ public class DatabaseGui extends JFrame implements ActionListener {
 
 	// The input submit button will go on it's own panel so that 
 	// we can better control it's positioning
-	private JButton inputSubmit = new JButton("Submit Query");
+	private JButton inputClear = new JButton("Clear");
+	private JButton inputSubmit = new JButton("Submit");
 
 	// Things that will go on the tablePanel
 	private JTable guiTable = null;
@@ -126,8 +127,12 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		inputPanel.add(inputField);
 
 		// Adding things to inputSubmitPanel
+		inputClear.setFont(buttonFont);
+		inputClear.addActionListener(this);
 		inputSubmit.setFont(buttonFont);
 		inputSubmit.addActionListener(this);
+		inputSubmitPanel.add(inputClear);
+		inputSubmitPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		inputSubmitPanel.add(inputSubmit);
 
 		// Adding label to tableLabelPanel
@@ -223,9 +228,16 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		}else if(source instanceof JButton) {
 			// JButton Event
 			
-			// get the text (query) from the input box
-			dbResults = dbInter.execStatement(inputField.getText());
-			createTable(dbResults);
+
+			if(((JButton) source).getText().equals("Submit")) {
+				// get the text (query) from the input box and send it to the db
+				if(!inputField.getText().equals("")) {
+					dbResults = dbInter.execStatement(inputField.getText());
+					createTable(dbResults);
+				}
+			} else if(((JButton) source).getText().equals("Clear")) {
+				inputField.setText("");
+			}
 		}
 	}	
 
