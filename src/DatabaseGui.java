@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
@@ -182,28 +183,51 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		Object source = e.getSource();
 	
 		if(source instanceof JComboBox) {
-			System.out.println("JComboBox Event!");
-
+			// JComboBox Event
 			dbResults = dbInter.execStatement("SELECT * FROM " + ((JComboBox) source).getSelectedItem().toString());
+
+			// Make a new table model
+			DefaultTableModel tableModel = new DefaultTableModel();
 
 			try {
 				dbMeta = dbResults.getMetaData(); // for column headers
 
-				int columnCount = dbMeta.getColumnCount() + 1;
-				String[] columnHeaders = new String[columnCount];
+				int columnCount = dbMeta.getColumnCount();
+				dbTableHeaders = new String[columnCount];
 
-				for(int i=1; i<columnCount; i++) {
-					columnHeaders[i] = dbMeta.getColumnName(i);
-					System.out.println(columnHeaders[i]);
+				// set table headers
+				for(int i=0; i<columnCount; i++){
+					dbTableHeaders[i] = dbMeta.getColumnName(i+1);
 				}
 
-				System.out.println(dbResults.getString(1));
+				tableModel.setColumnIdentifiers(dbTableHeaders);
+
+				// get the number of rows
+				dbResults.last();
+				int rowCount = dbResults.getRow();
+				dbResults.first();
+
+				// create table data
+				dbTableData = new Object[rowCount][];
+				
+				for(int i=0; i<rowCount; i++) {
+					String[] newTableRow = new String[columnCount];
+					for(int h=0; h<columnCount; h++){
+						newTableRow[h] = dbResults.getString(dbTableHeaders[h]);
+					}
+					dbTableData[i] = newTableRow;
+					tableModel.addRow(newTableRow);
+					dbResults.next();
+				}
 			}
 			catch(SQLException er) {
 				System.out.println(er);
 			}
-
-
+			
+			guiTable = new JTable(tableModel);
+			tablePane.setViewportView(guiTable);
+			repaint();
+			
 
 		}else if(source instanceof JButton) {
 			System.out.println("JButton Event!");

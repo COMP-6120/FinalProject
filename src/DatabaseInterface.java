@@ -37,7 +37,8 @@ public class DatabaseInterface {
 
 	public ResultSet execStatement(String stmtIn) {
 		try {
-			stmt = conn.createStatement();
+			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+										ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(stmtIn);
 			
 			return rs;
