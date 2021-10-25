@@ -69,10 +69,14 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		super("Comp 6120 Database Systems I Final Project");
 
 		// initializing database interface
-		dbInter = new DatabaseInterface(dbNameIn,
-										dbPortIn,
-										userIn,
-										pwIn);
+		try {
+			dbInter = new DatabaseInterface(dbNameIn,
+											dbPortIn,
+											userIn,
+											pwIn);
+		} catch(SQLException e) {
+			showErrorMessage(e);
+		}
 
 		// main frame configuration
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,15 +99,15 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		titlePanel.add(Box.createRigidArea(new Dimension(80, 0)));
 	
 		// Have the GUI reach out to the database for the table select list
-		dbResults = dbInter.execStatement("SHOW TABLES");
 		List<String> resultString = new ArrayList<String>();
-
 		try {
+			dbResults = dbInter.execStatement("SHOW TABLES");
+
 			while(dbResults.next()) {
 				resultString.add(dbResults.getString(1));
 			}
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			showErrorMessage(e);
 		}	
 
 		// initialize the dbTables Array
@@ -156,8 +160,12 @@ public class DatabaseGui extends JFrame implements ActionListener {
 		tablePane.setPreferredSize(new Dimension(550, 200));
 		tablePane.setMaximumSize(new Dimension(550, 200));
 		// initially set up the guiTable here with the first db table in the list
-		dbResults = dbInter.execStatement("SELECT * FROM " + dbTables[0]);
-		createTable(dbResults);
+		try {
+			dbResults = dbInter.execStatement("SELECT * FROM " + dbTables[0]);
+			createTable(dbResults);
+		} catch (SQLException e) {
+			showErrorMessage(e);
+		}
 		guiTable.setFillsViewportHeight(true);
 		mainPanel.add(tablePane);
 
@@ -209,7 +217,7 @@ public class DatabaseGui extends JFrame implements ActionListener {
 				rs.next();
 			}
 		} catch(SQLException er) {
-			System.out.println(er);
+			showErrorMessage(er);
 		}
 		guiTable = new JTable(tableModel);
 		tablePane.setViewportView(guiTable);
@@ -221,9 +229,13 @@ public class DatabaseGui extends JFrame implements ActionListener {
 	
 		if(source instanceof JComboBox) {
 			// JComboBox Event
-			dbResults = dbInter.execStatement("SELECT * FROM " + ((JComboBox) source).getSelectedItem().toString());
+			try {
+				dbResults = dbInter.execStatement("SELECT * FROM " + ((JComboBox) source).getSelectedItem().toString());
 
-			createTable(dbResults);		
+				createTable(dbResults);
+			} catch (SQLException er) {
+				showErrorMessage(er);
+			}
 
 		}else if(source instanceof JButton) {
 			// JButton Event
@@ -232,13 +244,21 @@ public class DatabaseGui extends JFrame implements ActionListener {
 			if(((JButton) source).getText().equals("Submit")) {
 				// get the text (query) from the input box and send it to the db
 				if(!inputField.getText().equals("")) {
-					dbResults = dbInter.execStatement(inputField.getText());
-					createTable(dbResults);
+					try{  
+						dbResults = dbInter.execStatement(inputField.getText());
+						createTable(dbResults);
+					} catch (SQLException er) {
+						showErrorMessage(er);
+					}
 				}
 			} else if(((JButton) source).getText().equals("Clear")) {
 				inputField.setText("");
 			}
 		}
+	}
+
+	private void showErrorMessage(SQLException e) {
+		JOptionPane.showMessageDialog(this, e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
 	}	
 
 	public void display() {
