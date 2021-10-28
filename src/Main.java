@@ -7,10 +7,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args){
         // GUI Instance
-		DatabaseGui dGui = new DatabaseGui(args[0],
-										   args[1],
-										   args[2],
-										   args[3]);
+		DatabaseGui dGui = new DatabaseGui("group10", "3307", "root", "comp6120");
 		dGui.display();
     }
 }
