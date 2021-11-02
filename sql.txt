@@ -46,7 +46,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 9. Show the names of all the books shipped on 08/04/2016 and their
      shippers' names.
-
+> INCOMPLETE: SELECT DISTINCT b.Title, s.ShipperName FROM book AS b, shipper AS s WHERE b.BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE OrderDate="8/4/2016"));
 
 10. Show the unique names of all the books *lastname1 firstname1* and
      *lastname4 firstname4* *both* ordered.
@@ -54,7 +54,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 11. Show the names of all the books *lastname6 firstname6* was
      responsible for.
-> SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE EmployeeID = (SELECT EmployeeID FROM employee WHERE FirstName = 'firstname6' AND LastName = 'lastname6')));
+> INCOMPLETE: SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE EmployeeID = (SELECT EmployeeID FROM employee WHERE FirstName = 'firstname6' AND LastName = 'lastname6')));
 > Output: [returns nothing currently, may need more work]
 
 12. Show the names of all the ordered books and their total
