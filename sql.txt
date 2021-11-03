@@ -66,6 +66,17 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 9. Show the names of all the books shipped on 08/04/2016 and their
      shippers' names.
 > INCOMPLETE: SELECT DISTINCT b.Title, s.ShipperName FROM book AS b, shipper AS s WHERE b.BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE OrderDate="8/4/2016"));
+> PROPOSED: SELECT DISTINCT B.Title, ORDER_SHIPPER.ShipperName FROM (SELECT OrderID, ShipperName FROM orders INNER JOIN shipper ON orders.ShipperID = shipper.ShipperID WHERE ShippedDate = "8/4/2016") AS ORDER_SHIPPER LEFT JOIN order_detail AS OD ON ORDER_SHIPPER.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID;
+> Output:
++-------+-------------+
+| Title | ShipperName |
++-------+-------------+
+| book3 | shipper1    |
+| book4 | shipper1    |
+| book7 | shipper1    |
+| book1 | shipper1    |
+| book5 | shipper2    |
++-------+-------------+
 
 10. Show the unique names of all the books *lastname1 firstname1* and
      *lastname4 firstname4* *both* ordered.
