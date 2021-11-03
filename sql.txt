@@ -80,7 +80,15 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 10. Show the unique names of all the books *lastname1 firstname1* and
      *lastname4 firstname4* *both* ordered.
-
+> SELECT DISTINCT B.Title FROM orders AS O LEFT JOIN order_detail AS OD ON O.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID WHERE CustomerID in (SELECT CustomerID FROM customer WHERE LastName = "lastname1" AND FirstName = "firstname1" OR LastName = "lastname4" AND FirstName = "firstname4") GROUP BY OD.BookID HAVING COUNT(DISTINCT CustomerID) > 1;
+> Output:
++-------+
+| Title |
++-------+
+| book1 |
+| book4 |
+| book7 |
++-------+
 
 11. Show the names of all the books *lastname6 firstname6* was
      responsible for.
