@@ -52,7 +52,16 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 8. Show the total price each customer paid and their names.  List the
      result in descending price.
-
+> SELECT CONCAT(C.FirstName, " ", C.LastName) AS Customer, Total FROM (SELECT CustomerID, (OD.Quantity * B.UnitPrice) AS Total FROM orders AS O LEFT JOIN order_detail AS OD ON O.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID GROUP BY CustomerID) AS TEMP LEFT JOIN customer AS C ON TEMP.CustomerID = C.CustomerID ORDER BY Total DESC;
+> Output:
++----------------------+--------+
+| Customer             | Total  |
++----------------------+--------+
+| firstname4 lastname4 | 180.24 |
+| firstname2 lastname2 |  78.90 |
+| firstname1 lastname1 |  24.68 |
+| firstname3 lastname3 |  12.34 |
++----------------------+--------+
 
 9. Show the names of all the books shipped on 08/04/2016 and their
      shippers' names.
