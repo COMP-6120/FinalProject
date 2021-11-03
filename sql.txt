@@ -29,6 +29,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 5. Show the total price *lastname1 firstname1* has paid for the books.
 > SELECT SUM(OD.Quantity * B.UnitPrice) FROM book B, order_detail OD, orders O, customer C, WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID AND C.FirstName = "firstname1" AND C.LastName = "lastname1";
+
 > Output:
 | 1 | 266.96 | 
 
@@ -37,7 +38,11 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 6. Show the names of the customers who have paid less than $80 in
      totals.
+ > SELECT FirstName, LastName FROM (SELECT C.FirstName, C.LastName FROM book B, order_detail OD, orders O, customer C WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID GROUP BY C.CustomerID HAVING SUM(OD.Quantity * B.UnitPrice) < 80) AS TEMPORARY;
 
+ > Output: 
+ | 1 | firstname2 | lastname2 |
+ | 2 | firstname3 | lastname3 | 
 
 7. Show the name of books supplied by *supplier2*.
 > SELECT Title FROM book WHERE SupplierID = (SELECT SupplierID FROM supplier WHERE CompanyName = 'supplier2');
