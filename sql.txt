@@ -29,6 +29,12 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 5. Show the total price *lastname1 firstname1* has paid for the books.
 
+> SELECT SUM(UnitPrice) FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE CustomerID = (SELECT CustomerID FROM customer WHERE FirstName = "firstname1" AND LastName = "lastname1")));
+> Output:
+| 1 | 116.14 | 
+
+
+
 
 6. Show the names of the customers who have paid less than $80 in
      totals.
