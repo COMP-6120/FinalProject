@@ -33,9 +33,6 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 > Output:
 | 1 | 266.96 | 
 
-
-
-
 6. Show the names of the customers who have paid less than $80 in
      totals.
  > SELECT FirstName, LastName FROM (SELECT C.FirstName, C.LastName FROM book B, order_detail OD, orders O, customer C WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID GROUP BY C.CustomerID HAVING SUM(OD.Quantity * B.UnitPrice) < 80) AS TEMPORARY;
@@ -97,7 +94,15 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 12. Show the names of all the ordered books and their total
      quantities.  List the result in ascending quantity.
-
+ > SELECT B.Title, SUM(OD.Quantity) FROM book B, order_detail OD WHERE B.BookID = OD.BookID GROUP BY B.Title ORDER BY SUM(OD.Quantity) ASC;
+ 
+ > Output: 
+ | book5 | 1 |
+ | book4 | 2 |
+ | book6 | 2 |
+ | book3 | 2 | 
+ | book7 | 4 |
+ | book1 | 6 |
 
 13. Show the names of the customers who ordered at least 2 books.
 
