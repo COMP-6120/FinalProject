@@ -124,6 +124,13 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 15. Show the name of the customer who has ordered at least one book
      written by *author1*.
+ > SELECT DISTINCT C.FirstName, C.LastName FROM customer C, book B, orders O, order_detail OD WHERE O.OrderID = OD.OrderID AND O.CustomerID = C.CustomerID AND OD.BookID = B.BookID AND B.Author = 'author1';
+ 
+ > Output: 
+ | firstname1 | lastname1 |
+ | firstname3 | lastname3 |
+ | firstname4 | lastname4 |
+ 
 
 
 16. Show the name and total sale (price of orders) of each employee.
