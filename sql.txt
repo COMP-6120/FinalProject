@@ -105,6 +105,11 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
  | book1 | 6 |
 
 13. Show the names of the customers who ordered at least 2 books.
+> SELECT FirstName, LastName FROM (SELECT C.FirstName, C.LastName, SUM(OD.Quantity) FROM customer C, orders O, order_detail OD WHERE OD.OrderID = O.orderID AND O.CustomerID = C.CustomerID GROUP BY C.CustomerID HAVING SUM(OD.Quantity) >= 2) as Temp;
+
+> Output:
+| firstname1 | lastname1 |
+| firstname4 | lastname4 |
 
 
 14. Show the name of the customers who have ordered at least a book in
