@@ -114,6 +114,12 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 14. Show the name of the customers who have ordered at least a book in
      *category3* or *category4* and the book names.
+> SELECT C.FirstName, C.LastName, B.Title FROM customer C, subject S, book B, orders O, order_detail OD WHERE O.OrderID = OD.OrderID AND B.BookID = OD.BookID AND O.CustomerID = C.CustomerID AND B.SubjectID = S.SubjectID AND (S.CategoryName = 'category3' OR S.CategoryName = 'category4');
+
+> Output:
+| firstname1 | lastname1 | book6 |
+| firstname1 | lastname1 | book7 |
+| firstname4 | lastname4 | book7 |
 
 
 15. Show the name of the customer who has ordered at least one book
