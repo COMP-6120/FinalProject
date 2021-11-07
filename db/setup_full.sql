@@ -143,8 +143,8 @@ DROP TABLE IF EXISTS `employee`;
 
 CREATE TABLE `employee` (
   `EmployeeID` int(11) NOT NULL,
-  `FirstName` varchar(50) NOT NULL,
   `LastName` varchar(50) NOT NULL,
+  `FirstName` varchar(50) NOT NULL,
   PRIMARY KEY (`EmployeeID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
