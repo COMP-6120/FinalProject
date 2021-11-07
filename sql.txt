@@ -132,8 +132,12 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
  | firstname4 | lastname4 |
  
 
-
 16. Show the name and total sale (price of orders) of each employee.
+> SELECT E.FirstName, E.LastName, SUM(OD.Quantity*B.UnitPrice) AS SalesTotal FROM book B, employee E, orders O, order_detail OD WHERE O.EmployeeID = E.EmployeeID AND OD.OrderID = O.OrderID AND OD.BookID = B.BookID GROUP BY E.FirstName, E.LastName;
+
+> Output:
+ | firstname5 | lastname5 | 162.82 |
+ | firstname6 | lastname6 | 491.76 | 
 
 
 17. Show the book names and their respective quantities for open
