@@ -42,7 +42,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 +-------+
 
 5. Show the total price *lastname1 firstname1* has paid for the books.
-> SELECT SUM(OD.Quantity * B.UnitPrice) FROM book B, order_detail OD, orders O, customer C, WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID AND C.FirstName = "firstname1" AND C.LastName = "lastname1";
+> SELECT SUM(OD.Quantity * B.UnitPrice) FROM book B, order_detail OD, orders O, customer C WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID AND C.FirstName = "firstname1" AND C.LastName = "lastname1";
 > Output:
 | 1 | 266.96 |
 
