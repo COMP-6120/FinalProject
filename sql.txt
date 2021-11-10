@@ -8,6 +8,7 @@
 | category2    |
 +--------------+
 
+
 2. Show the name and price of the most expensive book supplied by *supplier3*.
 > SET @p := (SELECT MAX(UnitPrice) FROM book WHERE supplierID = (SELECT SupplierID FROM supplier WHERE CompanyName = "supplier3"));
 SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
@@ -17,6 +18,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 +-------+-----------+
 | book7 |     56.90 |
 +-------+-----------+
+
 
 3. Show the unique names of all books ordered by *lastname1 firstname1*.
 > SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE CustomerID = (SELECT CustomerID FROM customer WHERE FirstName = "firstname1" AND LastName = "lastname1")));
@@ -30,6 +32,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book7 |
 +-------+
 
+
 4. Show the title of books which have more than 10 units in stock.
 > SELECT Title FROM book WHERE Quantity > 10;
 > Output:
@@ -41,20 +44,27 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book7 |
 +-------+
 
+
 5. Show the total price *lastname1 firstname1* has paid for the books.
 > SELECT SUM(OD.Quantity * B.UnitPrice) FROM book B, order_detail OD, orders O, customer C WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID AND C.FirstName = "firstname1" AND C.LastName = "lastname1";
 > Output:
-| 1 | 266.96 |
++--------------------------------+
+| SUM(OD.Quantity * B.UnitPrice) |
++--------------------------------+
+|                         266.96 |
++--------------------------------+
+
 
 6. Show the names of the customers who have paid less than $80 in totals.
 > SELECT FirstName, LastName FROM (SELECT C.FirstName, C.LastName FROM book B, order_detail OD, orders O, customer C WHERE OD.BookID = B.BookID AND O.OrderID = OD.OrderID AND C.CustomerID = O.CustomerID GROUP BY C.CustomerID HAVING SUM(OD.Quantity * B.UnitPrice) < 80) AS TEMPORARY;
-> Output: 
+> Output:
 +------------+-----------+
 | FirstName  | LastName  |
 +------------+-----------+
 | firstname2 | lastname2 |
 | firstname3 | lastname3 |
 +------------+-----------+
+
 
 7. Show the name of books supplied by *supplier2*.
 > SELECT Title FROM book WHERE SupplierID = (SELECT SupplierID FROM supplier WHERE CompanyName = 'supplier2');
@@ -65,6 +75,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book3 |
 | book5 |
 +-------+
+
 
 8. Show the total price each customer paid and their names.  List the result in descending price.
 > SELECT CONCAT(C.FirstName, " ", C.LastName) AS Customer, Total FROM (SELECT CustomerID, (OD.Quantity * B.UnitPrice) AS Total FROM orders AS O LEFT JOIN order_detail AS OD ON O.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID GROUP BY CustomerID) AS TEMP LEFT JOIN customer AS C ON TEMP.CustomerID = C.CustomerID ORDER BY Total DESC;
@@ -78,9 +89,9 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | firstname3 lastname3 |  12.34 |
 +----------------------+--------+
 
+
 9. Show the names of all the books shipped on 08/04/2016 and their shippers' names.
-> INCOMPLETE: SELECT DISTINCT b.Title, s.ShipperName FROM book AS b, shipper AS s WHERE b.BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE OrderDate="8/4/2016"));
-> PROPOSED: SELECT DISTINCT B.Title, ORDER_SHIPPER.ShipperName FROM (SELECT OrderID, ShipperName FROM orders INNER JOIN shipper ON orders.ShipperID = shipper.ShipperID WHERE ShippedDate = "8/4/2016") AS ORDER_SHIPPER LEFT JOIN order_detail AS OD ON ORDER_SHIPPER.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID;
+> SELECT DISTINCT B.Title, ORDER_SHIPPER.ShipperName FROM (SELECT OrderID, ShipperName FROM orders INNER JOIN shipper ON orders.ShipperID = shipper.ShipperID WHERE ShippedDate = "8/4/2016") AS ORDER_SHIPPER LEFT JOIN order_detail AS OD ON ORDER_SHIPPER.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID;
 > Output:
 +-------+-------------+
 | Title | ShipperName |
@@ -91,6 +102,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book1 | shipper1    |
 | book5 | shipper2    |
 +-------+-------------+
+
 
 10. Show the unique names of all the books *lastname1 firstname1* and *lastname4 firstname4* *both* ordered.
 > SELECT DISTINCT B.Title FROM orders AS O LEFT JOIN order_detail AS OD ON O.OrderID = OD.OrderID LEFT JOIN book AS B ON OD.BookID = B.BookID WHERE CustomerID in (SELECT CustomerID FROM customer WHERE LastName = "lastname1" AND FirstName = "firstname1" OR LastName = "lastname4" AND FirstName = "firstname4") GROUP BY OD.BookID HAVING COUNT(DISTINCT CustomerID) > 1;
@@ -103,9 +115,11 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book7 |
 +-------+
 
+
 11. Show the names of all the books *lastname6 firstname6* was responsible for.
 > INCOMPLETE: SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE EmployeeID = (SELECT EmployeeID FROM employee WHERE FirstName = 'firstname6' AND LastName = 'lastname6')));
-> Output: [returns nothing currently, may need more work]
+> Output:
+
 
 12. Show the names of all the ordered books and their total quantities.  List the result in ascending quantity.
 > SELECT B.Title, SUM(OD.Quantity) FROM book B, order_detail OD WHERE B.BookID = OD.BookID GROUP BY B.Title ORDER BY SUM(OD.Quantity) ASC;
@@ -120,6 +134,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | book7 |                4 |
 | book1 |                6 |
 +-------+------------------+
+
 
 13. Show the names of the customers who ordered at least 2 books.
 > SELECT FirstName, LastName FROM (SELECT C.FirstName, C.LastName, SUM(OD.Quantity) FROM customer C, orders O, order_detail OD WHERE OD.OrderID = O.orderID AND O.CustomerID = C.CustomerID GROUP BY C.CustomerID HAVING SUM(OD.Quantity) >= 2) as Temp;
@@ -143,6 +158,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | firstname4 | lastname4 | book7 |
 +------------+-----------+-------+
 
+
 15. Show the name of the customer who has ordered at least one book written by *author1*.
 > SELECT DISTINCT C.FirstName, C.LastName FROM customer C, book B, orders O, order_detail OD WHERE O.OrderID = OD.OrderID AND O.CustomerID = C.CustomerID AND OD.BookID = B.BookID AND B.Author = 'author1';
 > Output:
@@ -154,27 +170,23 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 | firstname4 | lastname4 |
 +------------+-----------+
 
+
 16. Show the name and total sale (price of orders) of each employee.
 > SELECT E.FirstName, E.LastName, SUM(OD.Quantity*B.UnitPrice) AS SalesTotal FROM book B, employee E, orders O, order_detail OD WHERE O.EmployeeID = E.EmployeeID AND OD.OrderID = O.OrderID AND OD.BookID = B.BookID GROUP BY E.FirstName, E.LastName;
+(Note to self: Doesn't display first name for some reason. Fix that.)
 > Output:
 +-------------+-----------+------------+
 | FirstName   | LastName  | SalesTotal |
 +-------------+-----------+------------+
- | lastname5 |     162.82 |     162.82 |
- | lastname6 |     491.76 |     491.76 |
+| firstname5  | lastname5 |     162.82 |
+| firstname6  | lastname6 |     491.76 |
 +-------------+-----------+------------+
 
 
-17. Show the book names and their respective quantities for open
-     orders (the orders which have not been shipped) at midnight
-     08/04/2016.
+17. Show the book names and their respective quantities for open orders (the orders which have not been shipped) at midnight 08/04/2016.
 
 
-18. Show the names of customers who have ordered more than 1 book and
-     the corresponding quantities.  List the result in the descending
-     quantity.
+18. Show the names of customers who have ordered more than 1 book and the corresponding quantities. List the result in the descending quantity.
 
 
-19. Show the names of customers who have ordered more than 3 books and
-     their respective telephone numbers.
-
+19. Show the names of customers who have ordered more than 3 books and their respective telephone numbers.
