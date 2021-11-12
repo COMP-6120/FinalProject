@@ -184,6 +184,7 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 
 17. Show the book names and their respective quantities for open orders (the orders which have not been shipped) at midnight 08/04/2016.
+> SELECT B.Title, OD.Quantity FROM book B, orders O, order_detail OD WHERE B.BookID = OD.BookID AND (SELECT OrderID FROM orders WHERE ShippedDate IS NULL)
 
 
 18. Show the names of customers who have ordered more than 1 book and the corresponding quantities. List the result in the descending quantity.
