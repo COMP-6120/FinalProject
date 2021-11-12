@@ -198,3 +198,4 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 
 19. Show the names of customers who have ordered more than 3 books and their respective telephone numbers.
+SELECT SUM(order_detail.Quantity) FROM orders JOIN order_detail ON orders.OrderID = order_detail.OrderID GROUP BY Orders.CustomerID;
