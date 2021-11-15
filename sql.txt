@@ -195,7 +195,22 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 
 18. Show the names of customers who have ordered more than 1 book and the corresponding quantities. List the result in the descending quantity.
+> SELECT c.FirstName, c.LastName, SUM(od.Quantity) FROM customer c, orders o, order_detail od WHERE c.CustomerID = o.CustomerID AND o.OrderID = od.OrderID GROUP BY o.CustomerID HAVING (SUM(od.Quantity) > 1);
+> Output:
++------------+-----------+------------------+
+| FirstName  | LastName  | SUM(od.Quantity) |
++------------+-----------+------------------+
+| firstname1 | lastname1 |                9 |
+| firstname4 | lastname4 |                6 |
++------------+-----------+------------------+
 
 
 19. Show the names of customers who have ordered more than 3 books and their respective telephone numbers.
-SELECT SUM(order_detail.Quantity) FROM orders JOIN order_detail ON orders.OrderID = order_detail.OrderID GROUP BY Orders.CustomerID;
+> SELECT FirstName, LastName, Phone FROM customer WHERE CustomerID IN (SELECT orders.customerID FROM orders JOIN order_detail ON orders.OrderID = order_detail.OrderID GROUP BY orders.CustomerID HAVING (SUM(order_detail.Quantity) > 3));
+> Output:
++------------+-----------+-------------+
+| FirstName  | LastName  | Phone       |
++------------+-----------+-------------+
+| firstname1 | lastname1 | 334-001-001 |
+| firstname4 | lastname4 | 334-004-004 |
++------------+-----------+-------------+
