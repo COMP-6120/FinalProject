@@ -162,8 +162,8 @@ LOCK TABLES `employee` WRITE;
 INSERT INTO
   `employee`
 VALUES
-  (1, 'lastname5', 'firstname5\r'),
-(2, 'lastname6', 'firstname6\r'),
+  (1, 'lastname5', 'firstname5'),
+(2, 'lastname6', 'firstname6'),
 (3, 'lastname6', 'firstname9');
 
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */

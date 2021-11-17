@@ -117,8 +117,17 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 
 
 11. Show the names of all the books *lastname6 firstname6* was responsible for.
-> INCOMPLETE: SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE EmployeeID = (SELECT EmployeeID FROM employee WHERE FirstName = 'firstname6' AND LastName = 'lastname6')));
+> SELECT Title FROM book WHERE BookID IN (SELECT BookID FROM order_detail WHERE OrderID IN (SELECT OrderID FROM orders WHERE EmployeeID IN (SELECT EmployeeID FROM employee WHERE LastName = 'lastname6')));
 > Output:
++-------+
+| Title |
++-------+
+| book1 |
+| book3 |
+| book4 |
+| book6 |
+| book7 |
++-------+
 
 
 12. Show the names of all the ordered books and their total quantities.  List the result in ascending quantity.
@@ -175,12 +184,12 @@ SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
 > SELECT E.FirstName, E.LastName, SUM(OD.Quantity*B.UnitPrice) AS SalesTotal FROM book B, employee E, orders O, order_detail OD WHERE O.EmployeeID = E.EmployeeID AND OD.OrderID = O.OrderID AND OD.BookID = B.BookID GROUP BY E.FirstName, E.LastName;
 (Note to self: Doesn't display first name for some reason. Fix that.)
 > Output:
-+-------------+-----------+------------+
-| FirstName   | LastName  | SalesTotal |
-+-------------+-----------+------------+
-| firstname5  | lastname5 |     162.82 |
-| firstname6  | lastname6 |     491.76 |
-+-------------+-----------+------------+
++------------+-----------+------------+
+| FirstName  | LastName  | SalesTotal |
++------------+-----------+------------+
+| firstname5 | lastname5 |     162.82 |
+| firstname6 | lastname6 |     491.76 |
++------------+-----------+------------+
 
 
 17. Show the book names and their respective quantities for open orders (the orders which have not been shipped) at midnight 08/04/2016.
