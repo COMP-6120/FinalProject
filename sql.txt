@@ -10,8 +10,7 @@
 
 
 2. Show the name and price of the most expensive book supplied by *supplier3*.
-> SET @p := (SELECT MAX(UnitPrice) FROM book WHERE supplierID = (SELECT SupplierID FROM supplier WHERE CompanyName = "supplier3"));
-SELECT Title, UnitPrice FROM book WHERE UnitPrice = @p;
+> SELECT Title, UnitPrice FROM book WHERE UnitPrice = (SELECT MAX(UnitPrice) FROM book WHERE supplierID = (SELECT SupplierID FROM supplier WHERE CompanyName = "supplier3"));
 > Output:
 +-------+-----------+
 | Title | UnitPrice |
